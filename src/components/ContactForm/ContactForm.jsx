@@ -50,10 +50,10 @@ export const ContactForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className={css.form}>
-      <label className={css.formLabel}>
+      <label >
         Name
         <input
-          className={css.formInput}
+          className={css.input}
           type="text"
           name="name"
           value={contactName}
@@ -67,7 +67,7 @@ export const ContactForm = () => {
       <label className={css.formLabel}>
         Number
         <input
-          className={css.formInput}
+          className={css.input}
           type="tel"
           name="number"
           value={number}
