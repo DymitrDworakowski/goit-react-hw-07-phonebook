@@ -1,88 +1,86 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContactsThunk, getContactsThunk } from 'redux/contactsThunk';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { addContact } from 'redux/operations';
+import { selectContacts } from 'redux/selectors';
+
 
 export const ContactForm = () => {
+  const contacts = useSelector(selectContacts);
   const dispatch = useDispatch();
-  const [name, setName] = useState('');
+
+  const [contactName, setcontactName] = useState('');
   const [number, setNumber] = useState('');
 
-  useEffect(() => {
-    dispatch(getContactsThunk());
-  }, [dispatch]);
-  const handleChange = evt => {
-    const { name, value } = evt.target;
-    name === 'name' ? setName(value) : setNumber(value);
-  };
-  const reset = () => {
-    setName('');
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (contacts.some(({ name }) => name === contactName)) {
+      window.alert(`${contactName} is already in your contacts`);
+      return;
+    }
+
+    dispatch(
+      addContact({
+        name: contactName,
+        number,
+        id: nanoid(),
+      })
+    );
+
+    setcontactName('');
     setNumber('');
   };
-  const contacts = useSelector(state => state.contacts.items);
+
+  const handleChange = e => {
+    const { value, name } = e.target;
+
+    switch (name) {
+      case 'name':
+        setcontactName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        return;
+    }
+  };
+
   return (
-    <form
-      className={css.form}
-      onSubmit={e => {
-        const notifly = () => toast(`${name} is alredy in contacts`);
-        const contact = {
-          name: name,
-          phone: number,
-        };
-        e.preventDefault();
-        if (
-          contacts.some(
-            value => value.name.toLocaleLowerCase() === name.toLocaleLowerCase()
-          )
-        ) {
-          notifly();
-        } else {
-          dispatch(addContactsThunk(contact));
-          reset();
-        }
-      }}
-    >
-      <div>
-        <label className={css.label}>
-          <span>Name</span>
-        </label>
+    <form onSubmit={handleSubmit} className={css.form}>
+      <label className={css.formLabel}>
+        Name
         <input
-          className={css.input}
-          value={name}
-          onChange={handleChange}
+          className={css.formInput}
           type="text"
           name="name"
+          value={contactName}
+          onChange={handleChange}
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
         />
+      </label>
 
-        <label>
-          <span>Number</span>
-        </label>
+      <label className={css.formLabel}>
+        Number
         <input
-          className={css.input}
-          value={number}
-          onChange={handleChange}
+          className={css.formInput}
           type="tel"
           name="number"
+          value={number}
+          onChange={handleChange}
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
         />
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          pauseOnHover
-          theme="dark"
-        />
-        <button className={css.btn} type="submit">
-          Add contact
-        </button>
-      </div>
+      </label>
+
+      <button className={css.addContactBtn} type="submit">
+        Add contact
+      </button>
     </form>
   );
 };

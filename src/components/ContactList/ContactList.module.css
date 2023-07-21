@@ -1,22 +1,36 @@
-.listItem {
+.contactList {
+  margin-top: 30px;
   display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 20px;
+}
+
+.contactItem {
+  display: flex;
+  gap: 30px;
   justify-content: space-between;
-  width: 430px;
-  margin: 5px;
+  align-items: center;
 }
-.phone {
-  font-weight: 400;
-}
-.btn {
-  padding: 2px 10px;
-  border-radius: 4px;
+
+.contactListBtn {
   cursor: pointer;
-  border: 1px solid rgba(33, 33, 33, 0.2);
-  background-color: white;
+  border-radius: 4px;
+  padding: 5px 20px;
+  border: none;
+  font-weight: 600;
 }
-.btn:hover {
-  scale: 1.1;
-  background-color: rgba(255, 0, 0, 0.919);
-  color: white;
-  border-color: rgb(255, 255, 255);
+
+.contactListBtn:hover,
+.contactListBtn:focus {
+  background-color: rgb(255, 2, 2);
+  color: #fff;
+  transform: scale(1.1);
+  transition: all 250ms;
+}
+
+.contactText {
+  font-weight: 700;
+  font-size: 18px;
 }
